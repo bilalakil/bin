@@ -11,7 +11,7 @@
 
         <script>
             jQuery(function($) {
-                var items = $("table tbody tr");
+                var items = $("#content tbody tr");
 
                 var numItems = items.length;
                 var perPage = 2;
@@ -22,8 +22,8 @@
                     $(this).hide();
                 });
 
-                // now setup your pagination
-                $(".pagination-page").pagination({
+                // now setup pagination
+                $("#pagination").pagination({
                     items: numItems,
                     itemsOnPage: perPage,
                     cssStyle: "light-theme",
@@ -42,9 +42,9 @@
         </script>
     </head>
     <body>
-        <div class="pagination-page"></div>
+        <div id="pagination"></div>
 
-        <table>
+        <table id="content">
             <tbody>
                 <tr>
                     <td>Window</td>
