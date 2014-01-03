@@ -17,10 +17,7 @@
                 var perPage = 2;
 
                 // only show the first 2 (or "first per_page") items initially
-                items.slice(perPage).each(function() {
-                    // "this" represents each but the first 2 trs
-                    $(this).hide();
-                });
+                items.slice(perPage).hide();
 
                 // now setup pagination
                 $("#pagination").pagination({
@@ -33,9 +30,7 @@
                         var showTo = showFrom + perPage;
 
                         items.hide() // first hide everything, then show for the new page
-                             .slice(showFrom, showTo).each(function() {
-                                $(this).show();
-                            });
+                             .slice(showFrom, showTo).show();
                     }
                 });
             });
@@ -43,7 +38,7 @@
     </head>
     <body>
         <a href="../">Back to bin</a>,
-        <a href="https://github.com/2unco/bin/tree/master/simplepagination" target="_blank">see on Github</a>
+        <a href="https://github.com/2unco/bin/tree/master/simplepagination" target="_blank">see on GitHub</a>
 
         <h1>SimplePagination</h1>
 
