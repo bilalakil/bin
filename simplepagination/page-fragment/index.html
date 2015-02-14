@@ -73,12 +73,34 @@
                     }
                 });
 
-                // now check the page fragment and change page if necessary
-                var hash = window.location.hash.match(/^#page-(\d+)$/);
-                if(hash)
-                    // the selectPage function is one of many described in the documentation
-                    // we've captured the page number in a regex group: (\d+)
-                    $("#pagination").pagination("selectPage", parseInt(hash[1]));
+                // next we'll create a function to check the url fragment and change page if necessary
+                // we're storing this function in a variable so we can reuse it
+                var checkFragment = function() {
+                    // if there's no hash, make sure we go to page 1
+                    var hash = window.location.hash || "#page-1";
+
+                    // we'll use regex to check the hash string as follows:
+                    // ^            strictly from the beginning of the string (i.e. succeed "#page-3" but fail "hi!#page-3")
+                    // #page-       exactly match the text "#page-"
+                    // (            start a matching group (so we can access what's in these parentheses on their own)
+                    //      \d      any digit ([0-9])
+                    //      +       one or more of the previous literal (one or more digits)
+                    // )            end the matching group
+                    // $            we should now be at the end of the string - if not, then don't match (i.e. fail "#page-3hi!")
+                    hash = hash.match(/^#page-(\d+)$/);
+
+                    if(hash)
+                        // the selectPage function is one of many described in the documentation
+                        // we've captured the page number in a regex group: (\d+)
+                        $("#pagination").pagination("selectPage", parseInt(hash[1]));
+                };
+
+                // we'll call this function whenever the back or forward buttons are pressed
+                // thanks to mike o'connor for highlighting the need for this
+                $(window).bind("popstate", checkFragment);
+                
+                // and we'll also call it to check right now!
+                checkFragment();
             });
         </script>
     </body>
