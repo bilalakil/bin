@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, maximum-scale=1"/>
         <title>SimplePagination</title>
 
-        <link href="css/simplePagination.css" type="text/css" rel="stylesheet"/>
+        <link href="../css/simplePagination.css" type="text/css" rel="stylesheet"/>
     </head>
     <body>
-        <a href="..">Back to bin</a>,
-        <a href="https://github.com/2unco/bin/tree/master/simplepagination" target="_blank">see on GitHub</a>
+        <a href="../..">Back to bin</a>,
+        <a href="https://github.com/2unco/bin/tree/master/simplepagination/page-fragment" target="_blank">see on GitHub</a>
 
         <h1>SimplePagination</h1>
 
@@ -39,11 +39,17 @@
             </tbody>
         </table>
 
-        <script src="js/jquery-1.10.2.min.js"></script>
-        <script src="js/jquery.simplePagination.js"></script>
+        <p>Use the paginator and try <a href="javascript:window.location.reload()">refreshing the page</a>.</p>
+        <p id="refreshed">Refreshed/loaded!</p>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/jquery.simplePagination.js"></script>
 
         <script>
             jQuery(function($) {
+                // i've got a little refreshed notice in there - remove it after a second
+                setTimeout(function() { $("#refreshed").remove(); }, 1000);
+
                 var items = $("#content tbody tr");
 
                 var numItems = items.length;
@@ -66,6 +72,13 @@
                              .slice(showFrom, showTo).show();
                     }
                 });
+
+                // now check the page fragment and change page if necessary
+                var hash = window.location.hash.match(/^#page-(\d+)$/);
+                if(hash)
+                    // the selectPage function is one of many described in the documentation
+                    // we've captured the page number in a regex group: (\d+)
+                    $("#pagination").pagination("selectPage", parseInt(hash[1]));
             });
         </script>
     </body>
