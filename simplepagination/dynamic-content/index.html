@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, maximum-scale=1"/>
+        <title>simplePagination with dynamic content</title>
+
+        <link href="../css/simplePagination.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <a href="../..">Back to bin</a>,
+        <a href="https://github.com/2unco/bin/tree/master/simplepagination/dynamic-content" target="_blank">see on GitHub</a>
+
+        <h1>simplePagination with dynamic content</h1>
+
+        <p>
+            There exist a million and one different ways to dynamically retrieve content.
+            Your individual use case will be different to this so you'll almost certainly
+            need to adapt the code shown here to your own example. You should try to
+            understand the concepts behind this code and how all of the pieces fit
+            together so you can successfully change this example to work for you.
+        </p>
+
+        <div id="pagination"></div>
+
+        <p>
+            Your implementation may dynamically acquire content in any number of ways,
+            i.e. via AJAX from databases, or anything at all. For this example we'll just
+            use the following add and remove buttons:
+            <br/>
+            <button onclick="return false;" id="remove-row" href="#">Remove row</button>
+            <button onclick="return false;" id="add-row" href="#">Add row</button>
+        </p>
+
+        <table id="content">
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>4</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/jquery.simplePagination.js"></script>
+
+        <script>
+            jQuery(function($) {
+                // we're declaring this variable out here so it can be accessed in
+                // different functions which don't share the same scope (i.e. if we
+                // declared it in one of those functions then the other won't be able
+                // to access it)
+                var items;
+
+                var perPage = 3;
+
+                // now setup pagination
+                var $pagination = $("#pagination");
+                $pagination.pagination({
+                    itemsOnPage: perPage,
+                    cssStyle: "light-theme",
+                    onPageClick: function(pageNumber) { // this is where the magic happens
+                        // someone changed page, lets hide/show trs appropriately
+                        var showFrom = perPage * (pageNumber - 1);
+                        var showTo = showFrom + perPage;
+
+                        items.hide() // first hide everything, then show for the new page
+                             .slice(showFrom, showTo).show();
+                    }
+                });
+
+                // we need an updateItems function that we'll call both initially and
+                // whenever we add or remove any items. You'll need to ensure that this
+                // function is called whenever your items dynamically change
+                function updateItems() {
+                    items = $("#content tbody tr");
+
+                    // we'll update the number of items that the pagination element expects
+                    // using a method from the simplePagination documentation: updateItems
+                    $pagination.pagination("updateItems", items.length);
+
+                    // next we'll re-select the page so the onPageClick function we already
+                    // programmed will handle hiding and showing the correct content for us
+
+                    // note that the page we were on before may no longer exist (i.e. if
+                    // elements were removed and that page is no longer required), so we
+                    // will make sure to select an existing page
+                    var page = Math.min(
+                        $pagination.pagination("getCurrentPage"),
+                        $pagination.pagination("getPagesCount")
+                    );
+
+                    $pagination.pagination("selectPage", page);
+                }
+
+                updateItems();
+
+                // the code from this point is for dynamically adding and removing content
+                // this code will be different in your implementation. You may be getting
+                // your content via AJAX or some other service
+                
+                // the main point here is that updateItems is being called AFTER the content
+                // is added or removed. It doesn't matter how you get the content or what
+                // the content is - just make sure that you call updateItems whenever you
+                // want to recalculate pagination
+                $("#remove-row").click(function() {
+                    items.last().remove();
+
+                    // don't forget to updateItems
+                    updateItems();
+                });
+
+                $("#add-row").click(function() {
+                    $("#content tbody").append("<tr><td>" + items.length + "</td>" + 
+                        "<td>" + items.length + "</td></tr>");
+
+                    // don't forget to updateItems
+                    updateItems();
+                });
+            });
+        </script>
+    </body>
+</html>
