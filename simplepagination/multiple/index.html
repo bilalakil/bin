@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, maximum-scale=1"/>
+        <title>simplePagination used more than once on the same page</title>
+
+        <link href="../css/simplePagination.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <a href="../..">Back to bin</a>,
+        <a href="https://github.com/2unco/bin/tree/master/simplepagination/multiple" target="_blank">see on GitHub</a>
+
+        <h1>simplePagination used more than once on the same page</h1>
+
+        <p>
+            There are many ways to solve this problem.
+            This one just uses different selectors for each table and paginator you want to use,
+            which we'll then pass into a function so it can use them with jQuery,
+            instead of hardcoding values like in the basic example.
+            Other than that, the function behaves almost exactly as the code in the basic example.
+        </p>
+
+        <p>
+            By working with a function we can reuse most of our code and understand what's going on better.
+            We can also extend it so to contain other configuration options, like <code>perPages</code>.
+            That'll be included in this example.
+        </p>
+
+        <div id="pagination-1"></div>
+        <table id="content-1">
+            <tbody>
+                <tr>
+                    <td>Window</td>
+                    <td>John</td>
+                </tr>
+                <tr>
+                    <td>Door</td>
+                    <td>Chris</td>
+                </tr>
+                <tr>
+                    <td>Floor</td>
+                    <td>Michael</td>
+                </tr>
+                <tr>
+                    <td>Car</td>
+                    <td>James</td>
+                </tr>
+                <tr>
+                    <td>Bike</td>
+                    <td>Steven</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="pagination-2"></div>
+        <table id="content-2">
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>9</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>12</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/jquery.simplePagination.js"></script>
+
+        <script>
+            jQuery(function($) {
+                /*
+                 * The `options` argument is an object (i.e. `{}`)
+                 * which should have values specified for the following properties:
+                 *
+                 *     { // The values provided for each property are just examples!
+                 *         itemSelector: "#content tbody tr"
+                 *       , paginatorSelector: "#pagination"
+                 *       , itemsPerPage: 2
+                 *     }
+                 */
+                function paginate(options) {
+                    // Notice that this function has exactly the same logic as the basic example,
+                    // but with some hardcoded values replaced by properties in `options`.
+
+                    var items = $(options.itemSelector);
+
+                    var numItems = items.length;
+                    var perPage = options.itemsPerPage;
+
+                    // only show the first 2 (or "first per_page") items initially
+                    items.slice(perPage).hide();
+
+                    // now setup pagination
+                    $(options.paginationSelector).pagination({
+                        items: numItems,
+                        itemsOnPage: perPage,
+                        cssStyle: "light-theme",
+                        onPageClick: function(pageNumber) { // this is where the magic happens
+                            // someone changed page, lets hide/show trs appropriately
+                            var showFrom = perPage * (pageNumber - 1);
+                            var showTo = showFrom + perPage;
+
+                            items.hide() // first hide everything, then show for the new page
+                                 .slice(showFrom, showTo).show();
+
+                            // By returning false in this function we prevent the plugin from changing the page fragment
+                            // (i.e. the "#page-3" added to your page URL).
+                            // This is desirable when there are multiple paginators on the page,
+                            // as that fragment on its own can't distinguish which paginator is being referred to.
+                            return false;
+                        }
+                    });
+                }
+
+                paginate({
+                    itemSelector: "#content-1 tbody tr"
+                  , paginationSelector: "#pagination-1"
+                  , itemsPerPage: 2
+                });
+
+                paginate({
+                    itemSelector: "#content-2 tbody tr"
+                  , paginationSelector: "#pagination-2"
+                  , itemsPerPage: 3
+                });
+            });
+        </script>
+    </body>
+</html>
