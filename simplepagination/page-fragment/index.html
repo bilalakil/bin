@@ -2,14 +2,15 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, maximum-scale=1"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
         <title>simplePagination with simple page fragment handling</title>
 
         <link href="../css/simplePagination.css" type="text/css" rel="stylesheet"/>
     </head>
     <body>
         <a href="../..">Back to bin</a>,
-        <a href="https://github.com/2unco/bin/tree/master/simplepagination/page-fragment" target="_blank">see on GitHub</a>
+        <a href="https://github.com/bilalakil/bin/tree/master/simplepagination/page-fragment" target="_blank">see on GitHub</a>
 
         <h1>simplePagination with simple page fragment handling</h1>
 
@@ -39,67 +40,84 @@
             </tbody>
         </table>
 
-        <p>Use the paginator and try <a href="javascript:window.location.reload()">refreshing the page</a>.</p>
+        <p>
+            Use the paginator and try
+            <a href="javascript:window.location.reload()">refreshing the page</a>.
+        </p>
+
+        <!--
+        This paragraph is visible immediately.
+        We'll use JavaScript to delete it after a short time.
+
+        The combined effect is a paragraph that "appears" shortly each time the page is refreshed!
+        -->
         <p id="refreshed">Refreshed/loaded!</p>
 
         <script src="../js/jquery-1.10.2.min.js"></script>
         <script src="../js/jquery.simplePagination.js"></script>
 
         <script>
+            // Consider going through the basic simplePagination example before this:
+            // https://github.com/bilalakil/bin/tree/master/simplepagination/index.html
+
             jQuery(function($) {
-                // i've got a little refreshed notice in there - remove it after a second
+                // After one second, remove the "refreshed/loaded" notice.
                 setTimeout(function() { $("#refreshed").remove(); }, 1000);
+
+                // The paginator is created in exactly the same manner as the basic example.
 
                 var items = $("#content tbody tr");
 
                 var numItems = items.length;
                 var perPage = 2;
 
-                // only show the first 2 (or "first per_page") items initially
                 items.slice(perPage).hide();
 
-                // now setup pagination
                 $("#pagination").pagination({
                     items: numItems,
                     itemsOnPage: perPage,
                     cssStyle: "light-theme",
-                    onPageClick: function(pageNumber) { // this is where the magic happens
-                        // someone changed page, lets hide/show trs appropriately
+                    onPageClick: function(pageNumber) {
                         var showFrom = perPage * (pageNumber - 1);
                         var showTo = showFrom + perPage;
 
-                        items.hide() // first hide everything, then show for the new page
+                        items.hide()
                              .slice(showFrom, showTo).show();
                     }
                 });
 
-                // next we'll create a function to check the url fragment and change page if necessary
-                // we're storing this function in a variable so we can reuse it
-                var checkFragment = function() {
-                    // if there's no hash, make sure we go to page 1
+                // Now we'll create a function to check the URL fragment
+                // and change page according to the number it finds there.
+                function checkFragment() {
+                    // If there's no hash, treat it like page 1.
                     var hash = window.location.hash || "#page-1";
 
-                    // we'll use regex to check the hash string as follows:
-                    // ^            strictly from the beginning of the string (i.e. succeed "#page-3" but fail "hi!#page-3")
-                    // #page-       exactly match the text "#page-"
-                    // (            start a matching group (so we can access what's in these parentheses on their own)
-                    //      \d      any digit ([0-9])
-                    //      +       one or more of the previous literal (one or more digits)
-                    // )            end the matching group
-                    // $            we should now be at the end of the string - if not, then don't match (i.e. fail "#page-3hi!")
+                    // We'll use regular expressions to check the hash string as follows:
+                    // ^            Be strictly at the beginning of the string (i.e. fail "hi!#page-3").
+                    // #page-       Exactly match the text "#page-".
+                    // (            Start a matching group so we can access what's inside (i.e. the page number) later.
+                    //      \d      Match any digit (i.e. 0123456789).
+                    //      +       Match the previous literal (i.e. digit in this case) one or more times.
+                    // )            End the matching group.
+                    // $            Be strictly at the end of the string (i.e. fail "#page-3hi!").
                     hash = hash.match(/^#page-(\d+)$/);
 
-                    if(hash)
-                        // the selectPage function is one of many described in the documentation
-                        // we've captured the page number in a regex group: (\d+)
+                    if(hash) {
+                        // The `selectPage` function is one of many described in the documentation:
+                        // https://flaviusmatis.github.io/simplePagination.js/
+
+                        // We've captured the page number in a regex group: `(\d+)`.
                         $("#pagination").pagination("selectPage", parseInt(hash[1]));
+                    }
                 };
 
-                // we'll call this function whenever the back or forward buttons are pressed
-                // thanks to mike o'connor for highlighting the need for this
+                // We'll call this function whenever back/forward is pressed...
                 $(window).bind("popstate", checkFragment);
+                // (Thanks to [Mike O'Connor](https://stackoverflow.com/users/3568095/mike-oconnor)
+                // for highlighting the need for this!)
                 
-                // and we'll also call it to check right now!
+                // ... and we'll also call it when the page has loaded
+                // (which is right now).
                 checkFragment();
             });
         </script>

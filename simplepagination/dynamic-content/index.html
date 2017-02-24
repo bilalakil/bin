@@ -2,32 +2,38 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, maximum-scale=1"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
         <title>simplePagination with dynamic content</title>
 
         <link href="../css/simplePagination.css" type="text/css" rel="stylesheet"/>
     </head>
     <body>
-        <a href="../..">Back to bin</a>,
-        <a href="https://github.com/2unco/bin/tree/master/simplepagination/dynamic-content" target="_blank">see on GitHub</a>
+        <p>
+            <a href="../..">Back to bin</a>,
+            <a href="https://github.com/bilalakil/bin/tree/master/simplepagination/dynamic-content" target="_blank">see on GitHub</a>
+        </p>
 
         <h1>simplePagination with dynamic content</h1>
 
         <p>
             There exist a million and one different ways to dynamically retrieve content.
-            Your individual use case will be different to this so you'll almost certainly
-            need to adapt the code shown here to your own example. You should try to
-            understand the concepts behind this code and how all of the pieces fit
-            together so you can successfully change this example to work for you.
+            Your individual use case will be different to this dummy one,
+            so you'll need to adapt the code shown here to your own situation.
+            You should try to understand the concepts behind this code
+            and how all of the pieces fit together
+            so you can successfully change this example to work for you.
         </p>
 
         <div id="pagination"></div>
 
         <p>
             Your implementation may dynamically acquire content in any number of ways,
-            i.e. via AJAX from databases, or anything at all. For this example we'll just
-            use the following add and remove buttons:
-            <br/>
+            i.e. via AJAX from databases, or following user input, and so forth...
+            For this example we'll just use the following add and remove buttons:
+        </p>
+
+        <p>
             <button onclick="return false;" id="remove-row" href="#">Remove row</button>
             <button onclick="return false;" id="add-row" href="#">Add row</button>
         </p>
@@ -61,68 +67,82 @@
         <script src="../js/jquery.simplePagination.js"></script>
 
         <script>
+            // Consider going through the basic simplePagination example before this:
+            // https://github.com/bilalakil/bin/tree/master/simplepagination/index.html
+
             jQuery(function($) {
-                // we're declaring this variable out here so it can be accessed in
-                // different functions which don't share the same scope (i.e. if we
-                // declared it in one of those functions then the other won't be able
-                // to access it)
+                // We're declaring some shared variables variable in this outer scope
+                // so all of the functions we declare below can access it
+                // (whereas if we declared it inside one of those functions' scopes
+                // then a different function (which can't see that first function's)
+                // won't be able to access it).
+
                 var items;
 
                 var perPage = 3;
 
-                // now setup pagination
-                var $pagination = $("#pagination");
-                $pagination.pagination({
+                // This time we'll hold onto the created paginator so we can use it again later.
+                var $paginator = $("#pagination");
+                $paginator.pagination({
+                    // We're not specifying the `items` right now.
+                    // We've got a function below that'll handle that for us.
+
                     itemsOnPage: perPage,
                     cssStyle: "light-theme",
-                    onPageClick: function(pageNumber) { // this is where the magic happens
-                        // someone changed page, lets hide/show trs appropriately
+
+                    onPageClick: function(pageNumber) {
                         var showFrom = perPage * (pageNumber - 1);
                         var showTo = showFrom + perPage;
 
-                        items.hide() // first hide everything, then show for the new page
+                        items.hide()
                              .slice(showFrom, showTo).show();
                     }
                 });
 
-                // we need an updateItems function that we'll call both initially and
-                // whenever we add or remove any items. You'll need to ensure that this
-                // function is called whenever your items dynamically change
+                // We'll create a function to update the paginator
+                // whenever we add or remove items from it.
+                // You'll need to ensure that this function is called
+                // whenever your items dynamically change.
                 function updateItems() {
+                    // Notice that we're not using `var items = ...` -
+                    // instead we're using `items` variable declared outside this function.
                     items = $("#content tbody tr");
 
-                    // we'll update the number of items that the pagination element expects
-                    // using a method from the simplePagination documentation: updateItems
-                    $pagination.pagination("updateItems", items.length);
+                    // We'll update the number of items that the pagination element expects
+                    // using a method from the simplePagination documentation: `updateItems`.
+                    $paginator.pagination("updateItems", items.length);
 
-                    // next we'll re-select the page so the onPageClick function we already
-                    // programmed will handle hiding and showing the correct content for us
+                    // Next, we'll re-select the page so the `onPageClick` function we already
+                    // programmed will handle hiding and showing the correct content for us.
 
-                    // note that the page we were on before may no longer exist (i.e. if
-                    // elements were removed and that page is no longer required), so we
-                    // will make sure to select an existing page
+                    // Note that the page we were on before may no longer exist
+                    // (i.e. if elements were removed and that page is no longer required),
+                    // so we will make sure to select an existing page.
                     var page = Math.min(
-                        $pagination.pagination("getCurrentPage"),
-                        $pagination.pagination("getPagesCount")
+                        $paginator.pagination("getCurrentPage"),
+                        $paginator.pagination("getPagesCount")
                     );
 
-                    $pagination.pagination("selectPage", page);
+                    $paginator.pagination("selectPage", page);
                 }
 
+                // We'll call this now so the initial items can be loaded.
                 updateItems();
 
-                // the code from this point is for dynamically adding and removing content
-                // this code will be different in your implementation. You may be getting
-                // your content via AJAX or some other service
+
+
+                // The code from this point regards dynamically adding and removing content.
+                // This code will be different in your implementation.
+                // You may be getting your content via AJAX or some other service.
                 
-                // the main point here is that updateItems is being called AFTER the content
-                // is added or removed. It doesn't matter how you get the content or what
-                // the content is - just make sure that you call updateItems whenever you
-                // want to recalculate pagination
+                // The main takeaway is that `updateItems` is being called
+                // _after_ the content is added or removed.
+                // It doesn't matter how you get the content or what the content is -
+                // just make sure that you call `updateItems`
+                // when it's an appropriate time to want to recalculate pagination.
                 $("#remove-row").click(function() {
                     items.last().remove();
 
-                    // don't forget to updateItems
                     updateItems();
                 });
 
@@ -130,7 +150,6 @@
                     $("#content tbody").append("<tr><td>" + items.length + "</td>" + 
                         "<td>" + items.length + "</td></tr>");
 
-                    // don't forget to updateItems
                     updateItems();
                 });
             });

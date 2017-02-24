@@ -2,14 +2,17 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, maximum-scale=1"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
         <title>simplePagination</title>
 
         <link href="css/simplePagination.css" type="text/css" rel="stylesheet"/>
     </head>
     <body>
-        <a href="..">Back to bin</a>,
-        <a href="https://github.com/2unco/bin/tree/master/simplepagination" target="_blank">see on GitHub</a>
+        <p>
+            <a href="..">Back to bin</a>,
+            <a href="https://github.com/bilalakil/bin/tree/master/simplepagination" target="_blank">see on GitHub</a>
+        </p>
 
         <h1>simplePagination</h1>
 
@@ -49,20 +52,24 @@
                 var numItems = items.length;
                 var perPage = 2;
 
-                // only show the first 2 (or "first per_page") items initially
+                // Only show the first 2 (or first `per_page`) items initially.
                 items.slice(perPage).hide();
 
-                // now setup pagination
+                // Now setup the pagination using the `#pagination` div.
                 $("#pagination").pagination({
                     items: numItems,
                     itemsOnPage: perPage,
                     cssStyle: "light-theme",
-                    onPageClick: function(pageNumber) { // this is where the magic happens
-                        // someone changed page, lets hide/show trs appropriately
+
+                    // This is the actual page changing functionality.
+                    onPageClick: function(pageNumber) {
+                        // We need to show and hide `tr`s appropriately.
                         var showFrom = perPage * (pageNumber - 1);
                         var showTo = showFrom + perPage;
 
-                        items.hide() // first hide everything, then show for the new page
+                        // We'll first hide everything...
+                        items.hide()
+                             // ... and then only show the appropriate rows.
                              .slice(showFrom, showTo).show();
                     }
                 });

@@ -2,28 +2,28 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, maximum-scale=1"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
         <title>simplePagination used more than once on the same page</title>
 
         <link href="../css/simplePagination.css" type="text/css" rel="stylesheet"/>
     </head>
     <body>
         <a href="../..">Back to bin</a>,
-        <a href="https://github.com/2unco/bin/tree/master/simplepagination/multiple" target="_blank">see on GitHub</a>
+        <a href="https://github.com/bilalakil/bin/tree/master/simplepagination/multiple" target="_blank">see on GitHub</a>
 
         <h1>simplePagination used more than once on the same page</h1>
 
         <p>
             There are many ways to solve this problem.
             This one just uses different selectors for each table and paginator you want to use,
-            which we'll then pass into a function so it can use them with jQuery,
-            instead of hardcoding values like in the basic example.
+            which we'll then pass into a function that uses them instead of hardcoded values.
             Other than that, the function behaves almost exactly as the code in the basic example.
         </p>
 
         <p>
-            By working with a function we can reuse most of our code and understand what's going on better.
-            We can also extend it so to contain other configuration options, like <code>perPages</code>.
+            By working with a function we can reuse most of our code and better understand what's going.
+            We can also write the function to use other variables, like <code>perPages</code>.
             That'll be included in this example.
         </p>
 
@@ -115,6 +115,9 @@
         <script src="../js/jquery.simplePagination.js"></script>
 
         <script>
+            // Consider going through the basic simplePagination example before this:
+            // https://github.com/bilalakil/bin/tree/master/simplepagination/index.html
+
             jQuery(function($) {
                 /*
                  * The `options` argument is an object (i.e. `{}`)
@@ -135,30 +138,30 @@
                     var numItems = items.length;
                     var perPage = options.itemsPerPage;
 
-                    // only show the first 2 (or "first per_page") items initially
                     items.slice(perPage).hide();
 
-                    // now setup pagination
                     $(options.paginationSelector).pagination({
                         items: numItems,
                         itemsOnPage: perPage,
                         cssStyle: "light-theme",
-                        onPageClick: function(pageNumber) { // this is where the magic happens
-                            // someone changed page, lets hide/show trs appropriately
+                        onPageClick: function(pageNumber) {
                             var showFrom = perPage * (pageNumber - 1);
                             var showTo = showFrom + perPage;
 
-                            items.hide() // first hide everything, then show for the new page
+                            items.hide()
                                  .slice(showFrom, showTo).show();
 
-                            // By returning false in this function we prevent the plugin from changing the page fragment
+                            // By returning false in this function
+                            // we prevent the plugin from changing the page fragment
                             // (i.e. the "#page-3" added to your page URL).
                             // This is desirable when there are multiple paginators on the page,
-                            // as that fragment on its own can't distinguish which paginator is being referred to.
+                            // as that fragment (unmodified) isn't tied to a specific paginator.
                             return false;
                         }
                     });
                 }
+
+                // Now let's call the functions and create our paginators!
 
                 paginate({
                     itemSelector: "#content-1 tbody tr"
