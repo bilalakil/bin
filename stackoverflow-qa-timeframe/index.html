@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+        <title>StackOverflow: Q&amp;A Timeframe</title>
+
+        <style>
+          html, body, #app-container, #app-container > svg {
+              display: block;
+
+              margin: 0;
+              padding: 0;
+              width: 100%;
+              height: 100%;
+          }
+
+          #app-container line { stroke: black; }
+
+          #app-container .axis line.hour { stroke-opacity: 1; }
+          #app-container .axis line.half-hour { stroke-opacity: 0.3; }
+          #app-container .axis line { stroke-opacity: 0.075; }
+        </style>
+    </head>
+    <body>
+        <div id="app-container"></div>
+
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
