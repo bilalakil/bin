@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keypress', (e) => {
     if(e.key === ' ') { playSound() }
-    else { check(e.key) }
+    else { check(e.key.toLowerCase()) }
 
     io.value = ''
   })
