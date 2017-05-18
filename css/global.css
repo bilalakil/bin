@@ -1,9 +1,19 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0 auto;
-  padding: 2em;
-  max-width: 42em;
+  padding: 1em;
+  max-width: 46em;
 }
 
 img {
   max-width: 100%;
+}
+
+@media (min-width: 42em) {
+  body {
+    padding: 2em;
+  }
 }

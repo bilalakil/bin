@@ -7,6 +7,25 @@
     <title>Morse Practice</title>
 
     <link href="../css/global.css" rel="stylesheet"/>
+
+    <style>
+      aside {
+        margin: 0 auto;
+        max-width: 20em;
+      }
+
+      @media (min-width: 42em) {
+        main {
+          float: left;
+          max-width: 60%;
+        }
+
+        aside {
+          float: right;
+          max-width: calc(40% - 2em);
+        }
+      }
+    </style>
   </head>
   <body>
     <p>
@@ -14,29 +33,50 @@
       <a href="https://github.com/bilalakil/bin/tree/master/morse-practice" target="_blank">see on GitHub</a>
     </p>
 
-    <h1>Morse Practice</h1>
+    <main>
+      <h1>Morse Practice</h1>
 
-    <p>
-      Press space to hear (or repeat) a random letter or number in morse.
-      Try to type it as fast as you can.
-      It'll move on to the next character when you get it right, or do nothing if you get it wrong.
-    </p>
+      <p>
+        Press space to hear (or repeat) a random letter or number in morse.
+        Try to type it as fast as you can.
+        It'll move on to the next character when you get it right, or do nothing if you get it wrong.
+      </p>
 
-    <p>
-      You can use this input box to type on mobile devices:
-      <input type="text" id="io" placeholder="Press space."/>
-    </p>
+      <p>
+        You can use this input box to type on mobile devices:
+        <input type="text" id="io" placeholder="Press space."/>
+      </p>
 
-    <p>
-      You've identified <span id="count">0</span> characters so far.
-    </p>
+      <p>
+        You've identified <span id="count">0</span> characters so far.
+      </p>
+    </main>
+
+    <aside>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/b/b5/International_Morse_Code.svg"
+        alt="Chart of the Morse code letters and numerals."
+      />
+
+      <p><small>
+        <a href="https://commons.wikimedia.org/wiki/File%3AInternational_Morse_Code.svg" target="_blank">
+          By Rhey T. Snodgrass & Victor F. Camp, 1922 [Public domain], via Wikimedia Commons
+        </a>
+      </small></p>
+    </aside>
+
+    <div class="clear"></div>
 
     <img
       src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Morse_code_tree3.png?download"
       alt="Graphical representation of the dichotomic search table. The graph branches left for each dit and right for each dah until the character representation is exhausted."
     />
 
-    <p><small>By The original uploader was Aris00 at English Wikipedia - Transferred from en.wikipedia to Commons. Transfer was stated to be made by User:Ddxc., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=3177632</small></p>
+    <p><small>
+      <a href="https://commons.wikimedia.org/w/index.php?curid=3177632" target="_blank">
+        By The original uploader was Aris00 at English Wikipedia - Transferred from en.wikipedia to Commons. Transfer was stated to be made by User:Ddxc., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=3177632
+      </a>
+    </small></p>
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
