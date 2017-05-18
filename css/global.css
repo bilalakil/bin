@@ -5,7 +5,6 @@
 body {
   margin: 0 auto;
   padding: 1em;
-  max-width: 46em;
 }
 
 img {
@@ -15,5 +14,6 @@ img {
 @media (min-width: 42em) {
   body {
     padding: 2em;
+    max-width: 46em;
   }
 }

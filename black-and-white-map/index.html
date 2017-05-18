@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <title>bw-map</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,600,700,800" rel="stylesheet"/>
+    <link href="app.css" rel="stylesheet"/>
+
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3CN8h4q05dE4JkRKK5BPa5EoAqkUzwEY"></script>
+    <script defer src="https://unpkg.com/vue"></script>
+    <script defer src="map-style.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div id="app">Loading...</div>
+
+    <template id="app-template">
+      <div id="app"
+        tabindex="-1"
+        :style="{
+          'font-family': '\'' + fontFamily + '\', sans-serif',
+          'font-size': baseSize.toString() + 'em'
+        }"
+        @keyup.enter="toggleControls"
+      >
+        <div id="wrap">
+          <div id="map"></div>
+
+          <div id="overlay">
+            <h1 :style="{
+              'font-size': line1.size.toString() + 'em',
+              'font-weight': line1.weight,
+              'letter-spacing': line1.spacing.toString() + 'em',
+              'text-indent': line1.spacing.toString() + 'em'
+            }">{{ line1.text }}</h1>
+            <h2 :style="{
+              'font-size': line2.size.toString() + 'em',
+              'font-weight': line2.weight,
+              'letter-spacing': line2.spacing.toString() + 'em',
+              'text-indent': line2.spacing.toString() + 'em'
+            }">{{ line2.text }}</h2>
+
+            <p class="latlng">
+              <span class="val">{{ prettyLat }}</span><span class="deg"
+                >°{{ lat >= 0 ? 'N' : 'S' }}</span>
+              <span class="sep">/</span>
+              <span class="val">{{ prettyLng }}</span><span class="deg"
+                >°{{ lng >= 0 ? 'E' : 'W' }}</span>
+            </p>
+          </div>
+
+          <div id="controls" v-if="controlsEnabled">
+            <h1>Controls</h1>
+
+            <p><label>
+              Latitude:
+              <input type="number" v-model.number="lat"/>
+            </label></p>
+
+            <p><label>
+              Longitude:
+              <input type="number" v-model.number="lng"/>
+            </label></p>
+
+            <p><label>
+              Zoom:
+              <input type="number" v-model.number="zoom"/>
+            </label></p>
+
+            <h2>Display</h2>
+
+            <p>Font:</p>
+            <ul>
+              <li><button @click="fontFamily = 'Open Sans'">Open Sans</button></li>
+              <li><button @click="fontFamily = 'Lato'">Lato</button></li>
+            </ul>
+
+            <p><label>
+              Base Size (1.0, etc.):
+              <input type="number" v-model.number="baseSize"/>
+            </label></p>
+
+            <h3>Line 1</h3>
+
+            <p><label>
+              Text:
+              <input type="text" v-model="line1.text"/>
+            </label></p>
+
+            <p><label>
+              Size (3.5, etc.):
+              <input type="number" v-model.number="line1.size"/>
+            </label></p>
+
+            <p><label>
+              Weight (300/400/600/700/800):
+              <input type="number" v-model.number="line1.weight"/>
+            </label></p>
+
+            <p><label>
+              Spacing (0.3, etc.):
+              <input type="number" v-model.number="line1.spacing"/>
+            </label></p>
+
+            <h3>Line 2</h3>
+
+            <p><label>
+              Text:
+              <input type="text" v-model="line2.text"/>
+            </label></p>
+
+            <p><label>
+              Size (1.5, etc.):
+              <input type="number" v-model.number="line2.size"/>
+            </label></p>
+
+            <p><label>
+              Weight (300/400/600/700/800):
+              <input type="number" v-model.number="line2.weight"/>
+            </label></p>
+
+            <p><label>
+              Spacing (0.3, etc.):
+              <input type="number" v-model.number="line2.spacing"/>
+            </label></p>
+          </div>
+        </div>
+      </div>
+    </template>
+  </body>
+</html>
