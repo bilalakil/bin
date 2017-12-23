@@ -1,0 +1,33 @@
+.canvases
+{
+  position: relative;
+}
+
+.canvases canvas
+{
+  width: var(--cwidth);
+  max-width: 100%;
+}
+
+.canvases canvas+canvas
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.canvases .canvas-original
+{
+  visibility: hidden;
+}
+
+.canvases:hover .canvas-original
+{
+  visibility: visible;
+}
+
+.canvases:hover .canvas-art,
+.canvases:hover .canvas-nails
+{
+  visibility: hidden;
+}
