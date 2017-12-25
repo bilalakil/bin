@@ -1,19 +1,28 @@
 .canvases
 {
   position: relative;
+
+  max-width: 100%;
 }
 
 .canvases canvas
 {
-  width: var(--cwidth);
-  max-width: 100%;
-}
-
-.canvases canvas+canvas
-{
   position: absolute;
   top: 0;
   left: 0;
+
+  display: block;
+  width: var(--canvaswidth);
+  max-width: 100%;
+  max-height: 98vh;
+
+  object-fit: contain;
+  object-position: left;
+}
+
+.canvases canvas:last-child
+{
+  position: static;
 }
 
 .canvases .canvas-original
@@ -21,13 +30,74 @@
   visibility: hidden;
 }
 
-.canvases:hover .canvas-original
+.art-view-preview .canvases:hover .canvas-original
 {
   visibility: visible;
 }
 
-.canvases:hover .canvas-art,
-.canvases:hover .canvas-nails
+.art-view-preview .canvases:hover .canvas-art,
+.art-view-preview .canvases:hover .canvas-nails
 {
   visibility: hidden;
+}
+
+.print-view
+{
+  display: none;
+}
+
+@media print
+{
+  .step-print > *
+  {
+    display: none;
+  }
+
+  .step-print > .print-view
+  {
+    display: block;
+  }
+}
+
+.art-view-print
+{
+  width: var(--pagewidth);
+  height: var(--canvasheight);
+
+  overflow-x: hidden;
+}
+
+.art-view-print+.art-view-print
+{
+  page-break-before: always;
+}
+
+.art-view-print .canvases canvas
+{
+  position: absolute;
+  left: var(--offset);
+
+  max-width: none;
+  max-height: none;
+
+  object-fit: none;
+}
+
+@media (min-width: 40em)
+{
+  .art-view-stepper .flex-container
+  {
+    display: flex;
+  }
+
+  .art-view-stepper .canvases
+  {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
+
+  .art-view-stepper .controls
+  {
+    width: 12em;
+  }
 }

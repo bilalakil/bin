@@ -1,41 +1,15 @@
 (() => {
   const canvases = ['canvas-nails', 'canvas-art', 'canvas-original'];
 
-  const artCanvasScale = 4;
   const lineWidth = 4;
-  const nailRadius = 2;
+  const nailRadius = 6;
+  const textHeight = 15;
+  const numLetters = 4;
+  const textSpace = textHeight * numLetters;
+  const textToNailSpace = 4;
+  const offset = nailRadius + textSpace + textToNailSpace;
   const nailLoopLimit = 5;
   const strAroundNail = 0.2;
-
-  // Cheers: https://stackoverflow.com/a/4672319/1406230
-  const brasenham = (from, to, cb) => {
-    const dx = Math.abs(to[0]-from[0]);
-    const dy = Math.abs(to[1]-from[1]);
-    const sx = (from[0] < to[0]) ? 1 : -1;
-    const sy = (from[1] < to[1]) ? 1 : -1;
-
-    let err = dx - dy;
-    let cx = from[0];
-    let cy = from[1];
-
-    while(true){
-      cb(cx-nailRadius, cy-nailRadius);
-
-      if (cx === to[0] && cy === to[1]) {
-        break;
-      }
-
-      const e2 = 2*err;
-      if (e2 > -dy) {
-        err -= dy;
-        cx += sx;
-      }
-      if (e2 < dx) {
-        err += dx;
-        cy += sy;
-      }
-    }
-  };
 
   Vue.component('art-view', {
     template: '#art-view-template',
@@ -45,19 +19,35 @@
       'height',
       'nails',
       'strqty',
-      'type'
+      'type',
+      'speechAllowed'
     ],
     data () {
       return {
         show: false,
+        exhausted: false,
         curNail: 0,
         step: 0,
         distUsed: 0,
         nailsUsed: null,
         ogArt: null,
+
+        hotkey: null,
+        autoSpeed: 4,
+        auto: false,
+        pastLines: [],
+        speech: false,
+
+        pastLength: 5
       }
     },
     computed: {
+      scale () {
+        return (this.width*37) / this.image.width;
+      },
+      adjustedOffset () {
+        return Math.ceil(offset / this.scale);
+      },
       actualNumNails () {
         return Math.floor(this.nails/4)*4;
       }
@@ -86,10 +76,10 @@
       setSizes () {
         const self = this;
 
-        const wog = this.image.width + 2*nailRadius;;
-        const hog = this.image.height + 2*nailRadius;
-        const wart = wog * artCanvasScale;
-        const hart = hog * artCanvasScale;
+        const wog = this.image.width + 2*this.adjustedOffset;
+        const hog = this.image.height + 2*this.adjustedOffset;
+        const wart = wog * this.scale;
+        const hart = hog * this.scale;
 
         canvases.forEach((ref) => {
           const canvas = self.$refs[ref];
@@ -107,11 +97,11 @@
         const canvas = this.$refs['canvas-original'];
         const ctx = canvas.getContext('2d');
 
-        ctx.drawImage(this.image, nailRadius, nailRadius);
+        ctx.drawImage(this.image, this.adjustedOffset, this.adjustedOffset);
 
         // Cheers: https://www.htmlgoodies.com/html5/javascript/display-images-in-black-and-white-using-the-html5-canvas.html
         const dat = ctx.getImageData(
-          nailRadius, nailRadius,
+          this.adjustedOffset, this.adjustedOffset,
           this.image.width, this.image.height
         );
 
@@ -124,15 +114,26 @@
           pixels[i+2] = grey;
         }
 
-        ctx.putImageData(dat, nailRadius, nailRadius);
+        ctx.putImageData(dat, this.adjustedOffset, this.adjustedOffset);
       },
       drawNails () {
-        const w = this.image.width;
-        const h = this.image.height;
+        const scaledOffset = this.adjustedOffset * this.scale;
 
         const canvas = this.$refs['canvas-nails'];
         const ctx = canvas.getContext('2d');
+        ctx.font = '15px monospace';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#000';
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.stroke();
+        ctx.rect(
+          scaledOffset, scaledOffset,
+          canvas.width - 2*scaledOffset, canvas.height - 2*scaledOffset
+        );
+        ctx.stroke();
+
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = '#600';
 
@@ -140,12 +141,42 @@
           const pos = this.nailPos(i, true);
 
           ctx.beginPath();
-          ctx.arc(pos[0], pos[1], nailRadius*artCanvasScale, 0, 2*Math.PI);
+          ctx.arc(pos[0], pos[1], nailRadius, 0, 2*Math.PI);
           ctx.stroke();
 
           ctx.beginPath();
           ctx.arc(pos[0], pos[1], 1, 0, 2*Math.PI);
           ctx.stroke();
+
+          if(i % 25 === 24) {
+            ctx.fillStyle = '#600';
+            ctx.font = 'bold 15px monospace';
+          }
+
+          const label = ('    ' + (i+1)).slice(-numLetters);
+          if(pos[2] === 0 || pos[2] === 2) {
+            const textx = pos[0] - nailRadius;
+            const texty = pos[2] === 0
+              ? 0
+              : pos[1] + nailRadius + textToNailSpace;
+
+            // Tricky pad: https://stackoverflow.com/a/14760377/1406230
+            for(let l = 0; l < numLetters; l++) {
+              ctx.fillText(label[l], textx, texty + l*textHeight);
+            }
+          } else {
+            const textx = pos[2] === 1
+              ? pos[0] + nailRadius + textToNailSpace
+              : 0;
+            const texty = pos[1] + nailRadius;
+
+            ctx.fillText(label, textx, texty);
+          }
+
+          if(i % 25 === 24) {
+            ctx.fillStyle = '#000';
+            ctx.font = '15px monospace';
+          }
         }
       },
       nailPos (nail, forArt) {
@@ -161,35 +192,46 @@
         let edge = undefined;
 
         if(dist < w) {
-          x = nailRadius + dist;
-          y = nailRadius;
+          x = this.adjustedOffset + dist;
+          y = this.adjustedOffset;
           edge = 0;
         } else if(dist < w + h) {
-          x = nailRadius + w - 1;
-          y = nailRadius + (dist - w);
+          x = this.adjustedOffset + w - 1;
+          y = this.adjustedOffset + (dist - w);
           edge = 1;
         } else if(dist < 2*w + h) {
-          x = nailRadius + w - (dist - w - h) - 1;
-          y = nailRadius + h - 1;
+          x = this.adjustedOffset + w - (dist - w - h) - 1;
+          y = this.adjustedOffset + h - 1;
           edge = 2;
         } else {
-          x = nailRadius;
-          y = nailRadius + h - (dist - 2*w - h);
+          x = this.adjustedOffset;
+          y = this.adjustedOffset + h - (dist - 2*w - h);
           edge = 3;
         }
 
         if(forArt) {
-          x *= artCanvasScale;
-          y *= artCanvasScale;
+          x *= this.scale;
+          y *= this.scale;
         }
 
         return [x, y, edge];
       },
       resetArt () {
-        const printWidth =
+        const realWidth =
           this.width *
-          (1 + 2*(nailRadius/this.image.width));
-        this.$refs['canvas-container'].style.setProperty('--cwidth', printWidth + 'cm');
+          (1 + 2*(this.adjustedOffset / this.image.width));
+        this.$refs['canvas-container'].style.setProperty(
+          '--canvaswidth',
+          realWidth + 'cm'
+        );
+
+        const realHeight =
+          this.height *
+          (1 + 2*(this.adjustedOffset / this.image.height));
+        this.$refs['canvas-container'].style.setProperty(
+          '--canvasheight',
+          realHeight + 'cm'
+        );
 
         const canvas = this.$refs['canvas-art'];
         const ctx = canvas.getContext('2d');
@@ -204,18 +246,14 @@
         const ogCtx = og.getContext('2d');
 
         const dat = ogCtx.getImageData(
-          nailRadius, nailRadius,
+          this.adjustedOffset, this.adjustedOffset,
           this.image.width, this.image.height
         ).data;
 
         this.ogArt = dat;
       },
       doArt () {
-        if(this.type === 'preview') {
-          while(this.distUsed < this.strqty) {
-            this.doStep();
-          }
-        } else {
+        while(!this.exhausted && this.distUsed < this.strqty) {
           this.doStep();
         }
       },
@@ -241,7 +279,7 @@
           let sum = 0;
           let count = 0;
 
-          brasenham(fpos, tpos, (x, y) => {
+          this.brasenham(fpos, tpos, (x, y) => {
             sum += this.ogArt[y*this.image.width*4 + x*4];
             count++;
           });
@@ -256,17 +294,24 @@
         }
 
         if(bestNail === undefined) {
-          this.distUsed = this.strqty;
+          this.exhausted = true;
+
+          if(this.auto) {
+            this.toggleAuto();
+          }
+
           return;
         }
 
-        brasenham(fpos, bestPos, (x, y) => {
+        this.brasenham(fpos, bestPos, (x, y) => {
           const i = y*this.image.width*4 + x*4;
 
           this.ogArt[i] = 255;
           this.ogArt[i+1] = 255;
           this.ogArt[i+2] = 255;
         });
+
+        const oldDistUsed = this.distUsed;
 
         this.step++;
         this.distUsed += (
@@ -280,6 +325,12 @@
         }
         this.nailsUsed[bestNail]++;
 
+        const line = [this.curNail, bestNail];
+        this.pastLines.unshift(line);
+        if(this.pastLines.length === this.pastLength+1) {
+          this.pastLines.pop();
+        }
+
         const artFpos = this.nailPos(this.curNail, true);
         const artBestPos = this.nailPos(bestNail, true);
 
@@ -287,13 +338,123 @@
         const ctx = canvas.getContext('2d');
         ctx.lineWidth = lineWidth;
 
+        if(this.type === 'stepper') {
+          if(this.pastLines.length !== 1) {
+            const prevPos = this.nailPos(this.pastLines[1][0], true);
+
+            ctx.strokeStyle = '#000';
+            
+            ctx.beginPath();
+            ctx.moveTo(artFpos[0], artFpos[1]);
+            ctx.lineTo(prevPos[0], prevPos[1]);
+            ctx.stroke();
+          }
+
+          ctx.strokeStyle = '#c00';
+        }
+
         ctx.beginPath();
         ctx.moveTo(artFpos[0], artFpos[1]);
         ctx.lineTo(artBestPos[0], artBestPos[1]);
         ctx.stroke();
 
+        if(this.speech) {
+          const utt = new SpeechSynthesisUtterance('To ' + (bestNail+1));
+          speechSynthesis.speak(utt);
+        }
+
         this.curNail = bestNail;
+
+        if(this.auto && oldDistUsed < this.strqty && this.distUsed >= this.strqty) {
+          this.toggleAuto();
+        }
       },
+      // Cheers: https://stackoverflow.com/a/4672319/1406230
+      brasenham (from, to, cb) {
+        const dx = Math.abs(to[0]-from[0]);
+        const dy = Math.abs(to[1]-from[1]);
+        const sx = (from[0] < to[0]) ? 1 : -1;
+        const sy = (from[1] < to[1]) ? 1 : -1;
+
+        let err = dx - dy;
+        let cx = from[0];
+        let cy = from[1];
+
+        while(true) {
+          cb(cx - this.adjustedOffset, cy - this.adjustedOffset);
+
+          if (cx === to[0] && cy === to[1]) {
+            break;
+          }
+
+          const e2 = 2*err;
+          if (e2 > -dy) {
+            err -= dy;
+            cx += sx;
+          }
+          if (e2 < dx) {
+            err += dx;
+            cy += sy;
+          }
+        }
+      },
+      toggleAuto () {
+        if(this.auto) {
+          clearInterval(this.auto);
+          this.auto = null;
+        } else {
+          this.auto = setInterval(this.doStep, this.autoSpeed*1000);
+        }
+      },
+      toggleSpeech () {
+        if(this.speech) {
+          speechSynthesis.cancel();
+        }
+
+        this.speech = !this.speech;
+      }
+    },
+    watch: {
+      autoSpeed () {
+        if(!this.auto) {
+          return;
+        }
+
+        this.toggleAuto();
+        this.toggleAuto();
+      }
+    },
+    mounted () {
+      if(this.type !== 'preview') {
+        this.$nextTick(() => {
+          this.setSizes();
+          this.drawNails();
+          if(this.type === 'stepper') {
+            this.drawOriginal();
+          }
+          this.resetArt();
+        });
+      }
+      if(this.type === 'stepper') {
+        this.speech = this.speechAllowed;
+
+        const self = this;
+
+        self.hotkey = document.addEventListener('keyup', (e) => {
+          if(e.keyCode === 39) {
+            self.doStep();
+            e.preventDefault();
+          } else if(e.keyCode === 32) {
+            self.toggleAuto();
+            e.preventDefault();
+          }
+        });
+      }
+    },
+    beforeDestroy () {
+      if(this.hotkey) {
+        document.removeEventListener('keyup', this.hotkey);
+      }
     }
   });
 
@@ -308,7 +469,11 @@
         image: null,
         width: null,
         nails: null,
-        strqty: null
+        strqty: null,
+
+        speech: false,
+
+        pageWidth: 18
       };
     },
     computed: {
@@ -317,7 +482,10 @@
           return;
         }
 
-        return Math.floor(this.width * (this.image.height/this.image.width) * 100) / 100
+        return Math.round(
+          this.width *
+          (this.image.height/this.image.width) * 100
+        ) / 100
       }
     },
     methods: {
@@ -356,7 +524,14 @@
         });
       },
       prepareSpeech () {
-        console.log('prepareSpeech');
+        try {
+          const utt = new SpeechSynthesisUtterance('Speech ready!');
+          speechSynthesis.speak(utt);
+
+          this.speech = true;
+        } catch(e) {
+          alert('Unfortunately the speech synthesis API did not work.')
+        }
       }
     }
   });

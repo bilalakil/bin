@@ -12,27 +12,88 @@
     <div id="app"></div>
 
     <script type="text/x-template" id="art-view-template">
-<div class="art-view" v-if="show">
-  <div class="canvases" ref="canvas-container">
-    <canvas class="canvas-original" ref="canvas-original"></canvas>
-    <canvas class="canvas-art" ref="canvas-art"></canvas>
-    <canvas class="canvas-nails" ref="canvas-nails"></canvas>
+<div
+  ref="canvas-container"
+  v-if="show || type !== 'preview'"
+  class="art-view" :class="'art-view-' + type" 
+>
+  <div class="flex-container">
+    <div class="canvases">
+      <canvas class="canvas-original" ref="canvas-original"></canvas>
+      <canvas class="canvas-art" ref="canvas-art"></canvas>
+      <canvas class="canvas-nails" ref="canvas-nails"></canvas>
+    </div>
+    <aside v-if="type === 'stepper'" class="controls">
+      <ol>
+        <li v-for="(_, n) in pastLength">
+          <template v-if="pastLines.length > n">
+            {{ pastLines[n][0]+1 }} -> {{ pastLines[n][1]+1 }}
+          </template>
+        </li>
+      </ol>
+
+      <h1>Controls</h1>
+
+      <p>
+        Step: {{ step }}
+      </p>
+
+      <p>
+        String (m): {{ Math.round(distUsed*100)/100 }} / {{ strqty }}
+      </p>
+
+      <p>
+        <button @click="doStep">Next (-> key)</button>
+      </p>
+
+      <p v-if="speechAllowed">
+        <button @click="toggleSpeech">
+          Toggle speech ({{ speech ? 'on' : 'off' }})
+        </button>
+      </p>
+
+      <h2>Auto</h2>
+
+      <p>
+        Speed:
+        <input v-model="autoSpeed" type="number" min="1.5" step="0.25"/>
+      </p>
+
+      <p>
+        <button @click="toggleAuto">
+          Toggle ({{ auto ? 'on' : 'off' }} - space key)
+        </button>
+      </p>
+    </aside>
   </div>
 
-  <p>
+  <p v-if="type === 'preview'">
     Tap/hover over the preview to switch between the result and the original.
   </p>
+
 </div>
     </script>
 
     <script type="text/x-template" id="app-template">
 <div class="wrap">
-  <div v-if="step === 'config'" class="step">
+  <div v-if="step === 'config'" class="step step-config">
     <aside>
       <h1>Config</h1>
 
       <p>
-        Be careful not to use a large image as a large amount of processing is required. Try resizing your image to 512 pixels (on the largest dimension).
+        Be careful not to use a large image as a large amount of processing is
+        required. Try resizing your image to 512 pixels (on the largest dimension).
+      </p>
+
+      <p>
+        Sadly, the creator's prints were between 2-2.5% smaller than the input width
+        and height, so you probably want to factor this into your configuration.
+        If you increase the width to account for this, don't forget to increase your
+        "String to use".
+      </p>
+
+      <p>
+        Finally note that the string amount used is approximate. Be rough with your provisions.
       </p>
 
       <form @submit.prevent="doPreview">
@@ -51,7 +112,7 @@
         </p>
         <p>
           Number of nails:
-          <input v-model="nails" type="number" min="8" step="4"/>
+          <input v-model="nails" type="number" min="8" max="9996" step="4"/>
         </p>
         <p>
           String to use (m):
@@ -88,12 +149,7 @@
       </p>
     </div>
   </div>
-  <div v-else-if="step === 'print'" class="step">
-    <p>
-      Coming soon...
-    </p>
-
-    <!--
+  <div v-else-if="step === 'print'" class="step step-print">
     <div>
       <h1>Print</h1>
 
@@ -123,9 +179,30 @@
         <button @click="step = 'stringing-time'">Proceed</button>
       </p>
     </div>
-    -->
+
+    <div class="print-view" :style="{ '--pagewidth': pageWidth + 'cm' }">
+      <art-view
+        ref="print-art-views"
+        v-for="(n, index) in Math.ceil(width / pageWidth)"
+        :image="image"
+        :width="width"
+        :height="height"
+        :nails="nails"
+        type="print"
+        :style="{ '--offset': -index * pageWidth + 'cm' }"
+      ></art-view>
+    </div>
   </div>
-  <div v-else-if="step === 'stringing-time'" class="step">
+  <div v-else-if="step === 'stringing-time'" class="step step-stringing-time">
+    <art-view
+      :image="image"
+      :width="width"
+      :height="height"
+      :nails="nails"
+      :strqty="strqty"
+      :speechAllowed="speech"
+      type="stepper"
+    ></art-view>
   </div>
 </div>
     </script>
