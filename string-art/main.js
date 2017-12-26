@@ -486,6 +486,17 @@
           this.width *
           (this.image.height/this.image.width) * 100
         ) / 100
+      },
+      realWidth () {
+        if(!(this.image && this.width)) {
+          return;
+        }
+
+        const scale = (this.width*37) / this.image.width;
+        const adjustedOffset = Math.ceil(offset / scale);
+
+        return this.width *
+          (1 + 2*(adjustedOffset / this.image.width));
       }
     },
     methods: {

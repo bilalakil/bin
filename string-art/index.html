@@ -183,7 +183,7 @@
     <div class="print-view" :style="{ '--pagewidth': pageWidth + 'cm' }">
       <art-view
         ref="print-art-views"
-        v-for="(n, index) in Math.ceil(width / pageWidth)"
+        v-for="(n, index) in Math.ceil(realWidth / pageWidth)"
         :image="image"
         :width="width"
         :height="height"
