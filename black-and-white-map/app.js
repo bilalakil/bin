@@ -4,7 +4,8 @@ const vapp = new Vue({
   data () {
     return {
       map: null,
-
+      shouldRecenter: true,
+      
       lat: -33.865,
       lng: 151.209444,
       zoom: 13,
@@ -45,12 +46,17 @@ const vapp = new Vue({
       disableDefaultUI: true,
       styles: mapStyle
     })
-
+    
     this.map.addListener('center_changed', event => {
       const center = this.map.getCenter()
 
+      this.shouldRecenter = false
       this.lat = center.lat()
       this.lng = center.lng()
+      
+      this.$nextTick(() => {
+        this.shouldRecenter = true
+      })
     })
 
     document.getElementById('app').focus()
@@ -74,7 +80,7 @@ const vapp = new Vue({
     },
 
     recenter () {
-      if(!this.lat || !this.lng) { return }
+      if(!this.shouldRecenter || !this.lat || !this.lng) { return }
 
       this.map.setCenter({ lat: this.lat, lng: this.lng })
     }
