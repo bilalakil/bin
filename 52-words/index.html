@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width"/>
+<title>52 Words</title>
+
+<style>
+input[type="text"] { width: 125px; }
+.correct { color: rgb(30, 194, 30); }
+.incorrect { color: rgb(200, 28, 28); }
+</style>
+</head>
+
+<body>
+
+<h1>52 Words</h1>
+<p id="js-notice"><em>JavaScript required to check and reveal answers!</em></p>
+
+<p><strong>26 letters × 2 words:</strong> For each letter in the alphabet...</p>
+<p><strong>Word 1:</strong> What is the most common word that contains that letter <strong>at the beginning</strong>?</p>
+<p><strong>Word 2:</strong> What is the most common word that contains that letter <strong>anywhere in the word</strong>?<p>
+
+<p><small>Note that the same word is sometimes the answer in multiple places!</small></p>
+
+<form>
+<table aria-describedby="">
+  <tr>
+    <th></th>
+    <th>Word 1</th>
+    <th>Word 2</th>
+  </tr>
+  <tr>
+    <td>A</td>
+    <td><input type="text" required name="a1" pattern="[Aa][a-zA-Z\-]*" title="A single word starting with 'A'" placeholder="e.g.: apple"/></td>
+    <td><input type="text" required name="a2" pattern="[a-zA-Z\-]*[Aa][a-zA-Z\-]*" title="A single word containing 'A'" placeholder="e.g.: pineapple"/></td>
+  </tr>
+  <tr>
+    <td>B</td>
+    <td><input type="text" required name="b1" pattern="[Bb][a-zA-Z\-]*" title="A single word starting with 'B'" placeholder="e.g.: berry"/></td>
+    <td><input type="text" required name="b2" pattern="[a-zA-Z\-]*[Bb][a-zA-Z\-]*" title="A single word containing 'B'" placeholder="e.g.: strawberry"/></td>
+  </tr>
+  <tr>
+    <td>C</td>
+    <td><input type="text" required name="c1" pattern="[Cc][a-zA-Z\-]*" title="A single word starting with 'C'"/></td>
+    <td><input type="text" required name="c2" pattern="[a-zA-Z\-]*[Cc][a-zA-Z\-]*" title="A single word containing 'C'"/></td>
+  </tr>
+  <tr>
+    <td>D</td>
+    <td><input type="text" required name="d1" pattern="[Dd][a-zA-Z\-]*" title="A single word starting with 'D'"/></td>
+    <td><input type="text" required name="d2" pattern="[a-zA-Z\-]*[Dd][a-zA-Z\-]*" title="A single word containing 'D'"/></td>
+  </tr>
+  <tr>
+    <td>E</td>
+    <td><input type="text" required name="e1" pattern="[Ee][a-zA-Z\-]*" title="A single word starting with 'E'"/></td>
+    <td><input type="text" required name="e2" pattern="[a-zA-Z\-]*[Ee][a-zA-Z\-]*" title="A single word containing 'E'"/></td>
+  </tr>
+  <tr>
+    <td>F</td>
+    <td><input type="text" required name="f1" pattern="[Ff][a-zA-Z\-]*" title="A single word starting with 'F'"/></td>
+    <td><input type="text" required name="f2" pattern="[a-zA-Z\-]*[Ff][a-zA-Z\-]*" title="A single word containing 'F'"/></td>
+  </tr>
+  <tr>
+    <td>G</td>
+    <td><input type="text" required name="g1" pattern="[Gg][a-zA-Z\-]*" title="A single word starting with 'G'"/></td>
+    <td><input type="text" required name="g2" pattern="[a-zA-Z\-]*[Gg][a-zA-Z\-]*" title="A single word containing 'G'"/></td>
+  </tr>
+  <tr>
+    <td>H</td>
+    <td><input type="text" required name="h1" pattern="[Hh][a-zA-Z\-]*" title="A single word starting with 'H'"/></td>
+    <td><input type="text" required name="h2" pattern="[a-zA-Z\-]*[Hh][a-zA-Z\-]*" title="A single word containing 'H'"/></td>
+  </tr>
+  <tr>
+    <td>I</td>
+    <td><input type="text" required name="i1" pattern="[Ii][a-zA-Z\-]*" title="A single word starting with 'I'"/></td>
+    <td><input type="text" required name="i2" pattern="[a-zA-Z\-]*[Ii][a-zA-Z\-]*" title="A single word containing 'I'"/></td>
+  </tr>
+  <tr>
+    <td>J</td>
+    <td><input type="text" required name="j1" pattern="[Jj][a-zA-Z\-]*" title="A single word starting with 'J'"/></td>
+    <td><input type="text" required name="j2" pattern="[a-zA-Z\-]*[Jj][a-zA-Z\-]*" title="A single word containing 'J'"/></td>
+  </tr>
+  <tr>
+    <td>K</td>
+    <td><input type="text" required name="k1" pattern="[Kk][a-zA-Z\-]*" title="A single word starting with 'K'"/></td>
+    <td><input type="text" required name="k2" pattern="[a-zA-Z\-]*[Kk][a-zA-Z\-]*" title="A single word containing 'K'"/></td>
+  </tr>
+  <tr>
+    <td>L</td>
+    <td><input type="text" required name="l1" pattern="[Ll][a-zA-Z\-]*" title="A single word starting with 'L'"/></td>
+    <td><input type="text" required name="l2" pattern="[a-zA-Z\-]*[Ll][a-zA-Z\-]*" title="A single word containing 'L'"/></td>
+  </tr>
+  <tr>
+    <td>M</td>
+    <td><input type="text" required name="m1" pattern="[Mm][a-zA-Z\-]*" title="A single word starting with 'M'"/></td>
+    <td><input type="text" required name="m2" pattern="[a-zA-Z\-]*[Mm][a-zA-Z\-]*" title="A single word containing 'M'"/></td>
+  </tr>
+  <tr>
+    <td>N</td>
+    <td><input type="text" required name="n1" pattern="[Nn][a-zA-Z\-]*" title="A single word starting with 'N'"/></td>
+    <td><input type="text" required name="n2" pattern="[a-zA-Z\-]*[Nn][a-zA-Z\-]*" title="A single word containing 'N'"/></td>
+  </tr>
+  <tr>
+    <td>O</td>
+    <td><input type="text" required name="o1" pattern="[Oo][a-zA-Z\-]*" title="A single word starting with 'O'"/></td>
+    <td><input type="text" required name="o2" pattern="[a-zA-Z\-]*[Oo][a-zA-Z\-]*" title="A single word containing 'O'"/></td>
+  </tr>
+  <tr>
+    <td>P</td>
+    <td><input type="text" required name="p1" pattern="[Pp][a-zA-Z\-]*" title="A single word starting with 'P'"/></td>
+    <td><input type="text" required name="p2" pattern="[a-zA-Z\-]*[Pp][a-zA-Z\-]*" title="A single word containing 'P'"/></td>
+  </tr>
+  <tr>
+    <td>Q</td>
+    <td><input type="text" required name="q1" pattern="[Qq][a-zA-Z\-]*" title="A single word starting with 'Q'"/></td>
+    <td><input type="text" required name="q2" pattern="[a-zA-Z\-]*[Qq][a-zA-Z\-]*" title="A single word containing 'Q'"/></td>
+  </tr>
+  <tr>
+    <td>R</td>
+    <td><input type="text" required name="r1" pattern="[Rr][a-zA-Z\-]*" title="A single word starting with 'R'"/></td>
+    <td><input type="text" required name="r2" pattern="[a-zA-Z\-]*[Rr][a-zA-Z\-]*" title="A single word containing 'R'"/></td>
+  </tr>
+  <tr>
+    <td>S</td>
+    <td><input type="text" required name="s1" pattern="[Ss][a-zA-Z\-]*" title="A single word starting with 'S'"/></td>
+    <td><input type="text" required name="s2" pattern="[a-zA-Z\-]*[Ss][a-zA-Z\-]*" title="A single word containing 'S'"/></td>
+  </tr>
+  <tr>
+    <td>T</td>
+    <td><input type="text" required name="t1" pattern="[Tt][a-zA-Z\-]*" title="A single word starting with 'T'"/></td>
+    <td><input type="text" required name="t2" pattern="[a-zA-Z\-]*[Tt][a-zA-Z\-]*" title="A single word containing 'T'"/></td>
+  </tr>
+  <tr>
+    <td>U</td>
+    <td><input type="text" required name="u1" pattern="[Uu][a-zA-Z\-]*" title="A single word starting with 'U'"/></td>
+    <td><input type="text" required name="u2" pattern="[a-zA-Z\-]*[Uu][a-zA-Z\-]*" title="A single word containing 'U'"/></td>
+  </tr>
+  <tr>
+    <td>V</td>
+    <td><input type="text" required name="v1" pattern="[Vv][a-zA-Z\-]*" title="A single word starting with 'V'"/></td>
+    <td><input type="text" required name="v2" pattern="[a-zA-Z\-]*[Vv][a-zA-Z\-]*" title="A single word containing 'V'"/></td>
+  </tr>
+  <tr>
+    <td>W</td>
+    <td><input type="text" required name="w1" pattern="[Ww][a-zA-Z\-]*" title="A single word starting with 'W'"/></td>
+    <td><input type="text" required name="w2" pattern="[a-zA-Z\-]*[Ww][a-zA-Z\-]*" title="A single word containing 'W'"/></td>
+  </tr>
+  <tr>
+    <td>X</td>
+    <td><input type="text" required name="x1" pattern="[Xx][a-zA-Z\-]*" title="A single word starting with 'X'"/></td>
+    <td><input type="text" required name="x2" pattern="[a-zA-Z\-]*[Xx][a-zA-Z\-]*" title="A single word containing 'X'"/></td>
+  </tr>
+  <tr>
+    <td>Y</td>
+    <td><input type="text" required name="y1" pattern="[Yy][a-zA-Z\-]*" title="A single word starting with 'Y'"/></td>
+    <td><input type="text" required name="y2" pattern="[a-zA-Z\-]*[Yy][a-zA-Z\-]*" title="A single word containing 'Y'"/></td>
+  </tr>
+  <tr>
+    <td>Z</td>
+    <td><input type="text" required name="z1" pattern="[Zz][a-zA-Z\-]*" title="A single word starting with 'Z'"/></td>
+    <td><input type="text" required name="z2" pattern="[a-zA-Z\-]*[Zz][a-zA-Z\-]*" title="A single word containing 'Z'"/></td>
+  </tr>
+</table>
+
+<p>
+  <input type="submit" id="submit" value="Check"/>
+  <button id="reveal">Reveal answers</button>
+</p>
+</form>
+
+<div id="score-section" style="display:none;">
+  <hr/>
+
+  <p><strong>
+    <span id="result-a1">A1</span>
+    <span id="result-a2">A2</span>
+    <span id="result-b1">B1</span>
+    <span id="result-b2">B2</span>
+    <span id="result-c1">C1</span>
+    <span id="result-c2">C2</span>
+    <span id="result-d1">D1</span>
+    <span id="result-d2">D2</span>
+    <span id="result-e1">E1</span>
+    <span id="result-e2">E2</span>
+    <span id="result-f1">F1</span>
+    <span id="result-f2">F2</span>
+    <br/>
+    <span id="result-g1">G1</span>
+    <span id="result-g2">G2</span>
+    <span id="result-h1">H1</span>
+    <span id="result-h2">H2</span>
+    <span id="result-i1">I1</span>
+    <span id="result-i2">I2</span>
+    <span id="result-j1">J1</span>
+    <span id="result-j2">J2</span>
+    <span id="result-k1">K1</span>
+    <span id="result-k2">K2</span>
+    <span id="result-l1">L1</span>
+    <span id="result-l2">L2</span>
+    <br/>
+    <span id="result-m1">M1</span>
+    <span id="result-m2">M2</span>
+    <span id="result-n1">N1</span>
+    <span id="result-n2">N2</span>
+    <span id="result-o1">O1</span>
+    <span id="result-o2">O2</span>
+    <span id="result-p1">P1</span>
+    <span id="result-p2">P2</span>
+    <span id="result-q1">Q1</span>
+    <span id="result-q2">Q2</span>
+    <span id="result-r1">R1</span>
+    <span id="result-r2">R2</span>
+    <br/>
+    <span id="result-s1">S1</span>
+    <span id="result-s2">S2</span>
+    <span id="result-t1">T1</span>
+    <span id="result-t2">T2</span>
+    <span id="result-u1">U1</span>
+    <span id="result-u2">U2</span>
+    <span id="result-v1">V1</span>
+    <span id="result-v2">V2</span>
+    <span id="result-w1">W1</span>
+    <span id="result-w2">W2</span>
+    <span id="result-x1">X1</span>
+    <span id="result-x2">X2</span>
+    <br/>
+    <span id="result-y1">Y1</span>
+    <span id="result-y2">Y2</span>
+    <span id="result-z1">Z1</span>
+    <span id="result-z2">Z2</span>
+  </strong></p>
+
+  <p>
+    You got <strong><span id="score">52</span> / 52 Words</strong> correct
+    <span id="num-checks-single">on your first check!</span>
+    <span id="num-checks-multiple" style="display:none;">after checking <span id="num-checks">3</span> times!</span>
+  </p>
+
+  <p>
+    Challenge a friend or foe by sharing this link:<br/>
+    <a href="https://bilalakil.github.io/bin/52-words" target="_blank">https://bilalakil.github.io/bin/52-words</a>
+  </p>
+</div>
+
+<hr/>
+<footer>
+  <p>Spoiler alerts inside:</p>
+  <ul>
+    <li>Answers sourced from <a href="https://frequencylist.com" target="_blank">Frequency List</a> 🙏.</li>
+    <li>Source code available on <a href="https://github.com/bilalakil/bin/tree/master/52-words" target="_blank">GitHub</a>.</li>
+  </ul>
+</footer>
+
+<script>
+const TICK = "✅";
+const CROSS = "❌";
+
+const ANSWERS = [
+  ["a", "a"],
+  ["be", "be"],
+  ["can", "can"],
+  ["do", "and"],
+  ["even", "be"],
+  ["for", "of"],
+  ["get", "get"],
+  ["have", "the"],
+  ["i", "i"],
+  ["just", "just"],
+  ["know", "know"],
+  ["like", "all"],
+  ["my", "my"],
+  ["not", "not"],
+  ["of", "you"],
+  ["people", "up"],
+  ["question", "question"],
+  ["right", "for"],
+  ["so", "this"],
+  ["the", "the"],
+  ["up", "you"],
+  ["very", "have"],
+  ["what", "what"],
+  ["xray", "sex"],
+  ["you", "you"],
+  ["zero", "crazy"],
+];
+
+let didReveal = false;
+let numChecks = 0;
+let numCorrect = 0;
+
+const form = document.body.querySelector("form");
+const inputs = [...Array(26).keys()]
+  .map(i => {
+    const charLower = String.fromCharCode(97 + i);
+    return [
+      form.querySelector(`input[name="${charLower}1"]`),
+      form.querySelector(`input[name="${charLower}2"]`),
+    ];
+  });
+const scoreSection = document.body.querySelector("#score-section");
+const scoreEl = scoreSection.querySelector("#score");
+const numChecksSingle = scoreSection.querySelector("#num-checks-single");
+const numChecksMultiple = scoreSection.querySelector("#num-checks-multiple");
+const numChecksEl = scoreSection.querySelector("#num-checks");
+const results = [...Array(26).keys()]
+  .map(i => {
+    const charLower = String.fromCharCode(97 + i);
+    return [
+      scoreSection.querySelector(`#result-${charLower}1`),
+      scoreSection.querySelector(`#result-${charLower}2`),
+    ];
+  });
+const submitButton = form.querySelector("#submit");
+const revealButton = form.querySelector("#reveal");
+
+const hideRevealButton =
+  () => revealButton.style.display = "none";
+for (let inputPair of inputs)
+  for (let input of inputPair)
+    input.oninput = hideRevealButton;
+hideRevealButton();
+
+form.onsubmit = e => {
+  e.preventDefault();
+
+  if (didReveal)
+    return;
+
+  revealButton.style.removeProperty("display");
+
+  ++numChecks;
+  numCorrect = 0;
+
+  for (let letterI = 0; letterI != 26; ++letterI) {
+    for (let wordI = 0; wordI != 2; ++wordI) {
+      const inputEl = inputs[letterI][wordI];
+      const input = inputEl.value.replaceAll("-", "").toLowerCase();
+      const isCorrect = input == ANSWERS[letterI][wordI];
+      const output = isCorrect ? TICK : CROSS;
+
+      const parent = inputEl.parentNode;
+      if (parent.childNodes.length > 1)
+        parent.removeChild(parent.childNodes[1]);
+      parent.appendChild(document.createTextNode(output));
+
+      if (isCorrect) {
+        ++numCorrect;
+        inputEl.toggleAttribute("readonly", true);
+      }
+
+      const resultDisplay = results[letterI][wordI];
+      resultDisplay.classList.add(isCorrect ? "correct" : "incorrect");
+      resultDisplay.classList.remove(isCorrect ? "incorrect" : "correct");
+    }
+  }
+
+  scoreSection.style.removeProperty("display");
+  scoreEl.innerHTML = `${numCorrect}`;
+  numChecksEl.innerHTML = `${numChecks}`;
+  const numChecksToShow = numChecks == 1 ? numChecksSingle : numChecksMultiple;
+  const numChecksToHide = numChecks == 1 ? numChecksMultiple : numChecksSingle;
+  numChecksToShow.style.removeProperty("display");
+  numChecksToHide.style.display = "none";
+};
+
+revealButton.onclick = e => {
+  e.preventDefault();
+  submitButton.style.display = revealButton.style.display = "none";
+  didReveal = true;
+
+  for (let letterI = 0; letterI != 26; ++letterI) {
+    for (let wordI = 0; wordI != 2; ++wordI) {
+      const input = inputs[letterI][wordI];
+      input.toggleAttribute("readonly", true);
+
+      const answerHtml = `<br/>${ANSWERS[letterI][wordI]}`;
+
+      const parent = input.parentNode;
+      parent.insertAdjacentHTML("beforeend", answerHtml);
+    }
+  }
+};
+
+document.body.querySelector("#js-notice").remove();
+</script>
+
+</body>
+
+</html>
