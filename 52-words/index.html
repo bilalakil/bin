@@ -7,7 +7,7 @@
 <title>52 Words</title>
 
 <style>
-input[type="text"] { width: 125px; }
+input[type="text"] { width: 100px; }
 .correct { color: rgb(30, 194, 30); }
 .incorrect { color: rgb(200, 28, 28); }
 </style>
@@ -19,10 +19,18 @@ input[type="text"] { width: 125px; }
 <p id="js-notice"><em>JavaScript required to check and reveal answers!</em></p>
 
 <p><strong>26 letters × 2 words:</strong> For each letter in the alphabet...</p>
-<p><strong>Word 1:</strong> What is the most common word that contains that letter <strong>at the beginning</strong>?</p>
-<p><strong>Word 2:</strong> What is the most common word that contains that letter <strong>anywhere in the word</strong>?<p>
+<p>
+  <strong>Word 1:</strong> What is the most common word that contains that letter <strong>at the beginning</strong>?
+  <br/>
+  <small>For example, "apple" is a common word starting with the letter A, but is it the <em>most</em> common?</small>
+</p>
+<p>
+  <strong>Word 2:</strong> What is the most common word that contains that letter <strong>anywhere in the word</strong>?
+  <br/>
+  <small>For example, "pineapple" is a common word that contains the letter A anywhere in the word, but is it the <em>most</em> common?</small>
+<p>
 
-<p><small>Note that the same word is sometimes the answer in multiple places!</small></p>
+<p><strong>Important note:</strong> The same word is sometimes the answer in multiple places!</p>
 
 <form>
 <table aria-describedby="">
@@ -39,7 +47,7 @@ input[type="text"] { width: 125px; }
   <tr>
     <td>B</td>
     <td><input type="text" required name="b1" pattern="[Bb][a-zA-Z\-]*" title="A single word starting with 'B'" placeholder="e.g.: berry"/></td>
-    <td><input type="text" required name="b2" pattern="[a-zA-Z\-]*[Bb][a-zA-Z\-]*" title="A single word containing 'B'" placeholder="e.g.: strawberry"/></td>
+    <td><input type="text" required name="b2" pattern="[a-zA-Z\-]*[Bb][a-zA-Z\-]*" title="A single word containing 'B'" placeholder="e.g.: berry"/></td>
   </tr>
   <tr>
     <td>C</td>
